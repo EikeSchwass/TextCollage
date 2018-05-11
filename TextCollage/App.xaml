@@ -1,0 +1,49 @@
+﻿<Application x:Class="TextCollage.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:userControls="clr-namespace:TextCollage.UserControls"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <Style TargetType="{x:Type FrameworkElement}">
+            <Setter Property="Margin" Value="5" />
+        </Style>
+        <Style TargetType="Button" BasedOn="{StaticResource {x:Type FrameworkElement}}">
+            <Setter Property="Padding" Value="10,2,10,2" />
+            <Setter Property="TextBlock.FontSize" Value="16" />
+        </Style>
+        <Style TargetType="UserControl" BasedOn="{StaticResource {x:Type FrameworkElement}}" />
+        <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type FrameworkElement}}">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontFamily" Value="Calibri Light" />
+        </Style>
+        <Style TargetType="RadioButton" BasedOn="{StaticResource {x:Type FrameworkElement}}">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type FrameworkElement}}">
+            <Setter Property="MinWidth" Value="75" />
+        </Style>
+        <Style TargetType="Image" BasedOn="{StaticResource {x:Type FrameworkElement}}" />
+        <Style TargetType="ComboBox" BasedOn="{StaticResource {x:Type FrameworkElement}}" />
+        <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type FrameworkElement}}">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="userControls:ImageImportControl" BasedOn="{StaticResource {x:Type UserControl}}" />
+        <Style TargetType="userControls:TextSetupControl" BasedOn="{StaticResource {x:Type UserControl}}" />
+
+        <Style x:Key="HeaderTextBlock" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="16" />
+        </Style>
+        <Style TargetType="ContentControl">
+            <Setter Property="Margin" Value="45,5,5,5" />
+        </Style>
+
+        <SolidColorBrush x:Key="LightBG" Color="#E8E8E8" />
+        <SolidColorBrush x:Key="NormalBG" Color="#3030B1" />
+        <SolidColorBrush x:Key="DarkBG" Color="#00002f" />
+    </Application.Resources>
+</Application>

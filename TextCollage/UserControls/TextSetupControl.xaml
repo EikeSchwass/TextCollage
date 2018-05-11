@@ -1,0 +1,240 @@
+﻿<UserControl x:Class="TextCollage.UserControls.TextSetupControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:emguCV="clr-namespace:Emgu.CV.CvEnum;assembly=Emgu.CV"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" Tag="Text Setup">
+    <UserControl.Resources>
+        <ObjectDataProvider x:Key="FontTypesProvider" MethodName="GetValues"
+                            ObjectType="{x:Type system:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="emguCV:FONT" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+            <Setter Property="FontSize" Value="14" />
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid Margin="5" Background="{StaticResource LightBG}" VerticalAlignment="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid Background="{StaticResource NormalBG}">
+                <TextBlock Text="Preview" Style="{StaticResource HeaderTextBlock}" />
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <RadioButton IsChecked="{Binding Path=AutoUpdatePreviewImage, Mode=TwoWay}"
+                             Content="Auto Update" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" />
+                <RadioButton Grid.Column="1" HorizontalAlignment="Center" Margin="0">
+                    <RadioButton.Content>
+                        <Button Content="Update" TextBlock.FontSize="12" x:Name="UpdateImagePreviewButton"
+                                Click="UpdateImagePreviewButton_Click"
+                                IsEnabled="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}, Mode=FindAncestor}, Path=IsChecked}" />
+                    </RadioButton.Content>
+                </RadioButton>
+            </Grid>
+            <Grid Grid.Row="2" VerticalAlignment="Top" Background="{StaticResource LightBG}">
+                <Border BorderBrush="{Binding Path=ProgressBorderBrush, Mode=OneWay}" BorderThickness="3"
+                        Background="Black" HorizontalAlignment="Center">
+                    <Viewbox Stretch="Uniform">
+                        <Image Source="{Binding Path=PreviewImageSource, Mode=OneWay}" Margin="0" Stretch="Fill" />
+                    </Viewbox>
+                </Border>
+                <TextBlock Visibility="{Binding Path=ProgressBarVisibility, Mode=OneWay}"
+                           Text="{Binding Path=ProgressDescription, Mode=OneWay}" FontSize="10"
+                           Foreground="{Binding Path=ProgressBorderBrush, Mode=OneWay}" VerticalAlignment="Bottom"
+                           HorizontalAlignment="Center" />
+            </Grid>
+            <ProgressBar Grid.Row="3" Visibility="{Binding Path=ProgressBarVisibility, Mode=OneWay}"
+                         Value="{Binding Path=RenderingProgress, Mode=OneWay}" Minimum="0" Maximum="100" Height="10" />
+        </Grid>
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Background="{StaticResource NormalBG}">
+                        <TextBlock Text="Text to Display" Style="{StaticResource HeaderTextBlock}" />
+                    </Grid>
+                    <Grid Grid.Row="1" Background="{StaticResource LightBG}" MinWidth="250" VerticalAlignment="Top">
+                        <TextBox VerticalScrollBarVisibility="Auto"
+                                 Text="{Binding Path=InputText, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                 TextWrapping="Wrap" AcceptsReturn="True" FontSize="24" VerticalAlignment="Stretch"
+                                 HorizontalContentAlignment="Center" />
+                    </Grid>
+                </Grid>
+                <Grid Margin="5" Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Background="{StaticResource NormalBG}">
+                        <TextBlock Text="Parameters" Style="{StaticResource HeaderTextBlock}" />
+                    </Grid>
+                    <Grid Grid.Row="1" VerticalAlignment="Top" Background="{StaticResource LightBG}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Image width" Grid.Column="0" Grid.Row="0" />
+                        <TextBlock Text="Image height" Grid.Column="0" Grid.Row="1" />
+                        <TextBlock Text="Horizontal Margin" Grid.Column="0" Grid.Row="2"
+                                   ToolTip="Use ';' to seperate values for each line." />
+                        <TextBlock Text="Vertical Margin" Grid.Column="0" Grid.Row="3"
+                                   ToolTip="Use ';' to seperate values for each line." />
+                        <TextBlock Text="Horizontal Offset" Grid.Column="0" Grid.Row="4"
+                                   ToolTip=">0 means right. Use ';' to seperate values for each line." />
+                        <TextBlock Text="Vertical Offset" Grid.Column="0" Grid.Row="5"
+                                   ToolTip=">0 means Down. Use ';' to seperate values for each line." />
+                        <TextBlock Text="Character Spacing" Grid.Column="0" Grid.Row="7"
+                                   ToolTip="Stroke thickness of each character." />
+                        <TextBox
+                            Text="{Binding Path=Width, Mode=TwoWay, ValidatesOnExceptions=True, UpdateSourceTrigger=LostFocus}"
+                            Grid.Column="1" Grid.Row="0" />
+                        <TextBox
+                            Text="{Binding Path=Height, Mode=TwoWay, ValidatesOnExceptions=True, UpdateSourceTrigger=LostFocus}"
+                            Grid.Column="1" Grid.Row="1" />
+                        <TextBox
+                            Text="{Binding Path=HorizontalMargin, Mode=TwoWay, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"
+                            Grid.Column="1" Grid.Row="2" />
+                        <TextBox
+                            Text="{Binding Path=VerticalMargin, Mode=TwoWay, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"
+                            Grid.Column="1" Grid.Row="3" />
+                        <TextBox
+                            Text="{Binding Path=HorizontalOffset, Mode=TwoWay, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"
+                            Grid.Column="1" Grid.Row="4" />
+                        <TextBox
+                            Text="{Binding Path=VerticalOffset, Mode=TwoWay, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"
+                            Grid.Column="1" Grid.Row="5" />
+                        <TextBox
+                            Text="{Binding Path=CharacterSpacing, Mode=TwoWay, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"
+                            Grid.Column="1" Grid.Row="7" />
+                        <Grid Grid.Row="8" Grid.ColumnSpan="2" Grid.Column="0" Margin="5"
+                              Background="{StaticResource ResourceKey=NormalBG}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <RadioButton GroupName="useCSharp" Grid.Row="0" x:Name="UseCSharpRadioButton"
+                                         HorizontalContentAlignment="Stretch"
+                                         IsChecked="{Binding Path=UseCSharp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                <RadioButton.Content>
+                                    <TextBlock Text="Use C# (Highly recommended)" Foreground="White" />
+                                </RadioButton.Content>
+                            </RadioButton>
+                            <Grid Grid.Row="1" Margin="5" Background="{StaticResource LightBG}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Font" Grid.Column="0" Grid.Row="0"
+                                           ToolTip="The font style that is used." />
+                                <ComboBox Grid.Column="1" Grid.Row="0"
+                                          ItemsSource="{Binding Path=FontFamilies, Mode=OneWay, StringFormat=Name}"
+                                          SelectedItem="{Binding Path=CSharpFont, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"
+                                          IsEditable="True" StaysOpenOnEdit="True" />
+                                <CheckBox IsEnabled="{Binding ElementName=UseCSharpRadioButton, Path=IsChecked}"
+                                          IsChecked="{Binding Path=DrawCharacterBorders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          Content="Include Character Borders" Grid.Column="0" Grid.Row="1"
+                                          Grid.ColumnSpan="2" HorizontalAlignment="Center"
+                                          ToolTip="Stroke thickness of each character." />
+                                <TextBlock Text="Horizontal Stretch" Grid.Column="0" Grid.Row="2"
+                                           ToolTip="Factor for stretching characters horizontally." />
+                                <TextBox IsEnabled="{Binding ElementName=UseCSharpRadioButton, Path=IsChecked}"
+                                         Text="{Binding Path=HorizontalCharacterStretch, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"
+                                         Grid.Column="1" Grid.Row="2" />
+                                <TextBlock Text="Accuracy" Grid.Column="0" Grid.Row="3" />
+                                <Grid Grid.Column="1" Grid.Row="3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Slider x:Name="AccuracySlider"
+                                            Value="{Binding Path=RenderingAccuracy, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"
+                                            IsEnabled="{Binding ElementName=UseCSharpRadioButton, Path=IsChecked}"
+                                            VerticalAlignment="Center" Minimum="4" Maximum="50" />
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding ElementName=AccuracySlider, Path=Value, UpdateSourceTrigger=PropertyChanged, StringFormat=#.}"
+                                               HorizontalAlignment="Center" />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid Grid.Row="9" Grid.ColumnSpan="2" Grid.Column="0" Margin="5" Background="{StaticResource ResourceKey=NormalBG}" IsEnabled="False" Visibility="Collapsed">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <RadioButton GroupName="useCSharp" Grid.Row="0" HorizontalContentAlignment="Stretch"
+                                         x:Name="UseEmguCVRadioButton">
+                                <RadioButton.Content>
+                                    <TextBlock Text="Use EmguCV" Foreground="White" />
+                                </RadioButton.Content>
+                            </RadioButton>
+                            <Grid Grid.Row="1" Margin="5" Background="{StaticResource LightBG}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Grid.Row="0" Text="Thickness"
+                                           ToolTip="Stroke thickness of each character." />
+                                <TextBox Grid.Column="1" Grid.Row="0"
+                                         IsEnabled="{Binding ElementName=UseEmguCVRadioButton, Path=IsChecked}"
+                                         Text="{Binding Path=Thickness, Mode=TwoWay, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Grid.Column="0" Grid.Row="1" Text="Font"
+                                           ToolTip="The font style that is used." />
+                                <ComboBox Grid.Column="1" Grid.Row="1"
+                                          IsEnabled="{Binding ElementName=UseEmguCVRadioButton, Path=IsChecked}"
+                                          SelectedItem="{Binding Path=Font, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"
+                                          ItemsSource="{Binding Source={StaticResource FontTypesProvider}}" />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

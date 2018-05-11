@@ -1,0 +1,309 @@
+﻿<UserControl x:Class="TextCollage.UserControls.FitnessEvaluationControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:matching="clr-namespace:TextCollage.Core.Matching"
+             xmlns:userControls="clr-namespace:TextCollage.UserControls"
+             xmlns:textCollage="clr-namespace:TextCollage"
+             mc:Ignorable="d" Tag="Fitness Evalutation">
+    <UserControl.Resources>
+        <CollectionViewSource x:Key="ItemCollectionViewSource" CollectionViewType="ListCollectionView"
+                              Source="{Binding Matches}">
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="Image.Path" />
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+
+        <userControls:VisiblityConverter x:Key="VisibilityConverter" />
+        <userControls:BoolConverter x:Key="BoolConverter" />
+
+        <ObjectDataProvider x:Key="Algorithms" MethodName="GetValues" ObjectType="{x:Type system:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="matching:FittingAlgorithms" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="GeneticSelectionModes" MethodName="GetValues" ObjectType="{x:Type system:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="matching:GeneticAlgorithmSelectionMode" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+        <DataTemplate DataType="{x:Type matching:GeneticAlgorithmSettings}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Mutation Probability" />
+                <TextBox Grid.Row="0" Grid.Column="1"
+                         Text="{Binding Path=MutationProbability, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Population Size" />
+                <TextBox Grid.Row="1" Grid.Column="1"
+                         Text="{Binding Path=PopulationSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Selection Mode" />
+                <ComboBox Grid.Row="2" Grid.Column="1"
+                          ItemsSource="{Binding Source={StaticResource GeneticSelectionModes}}"
+                          SelectedItem="{Binding GeneticAlgorithmSelectionMode}" />
+
+                <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Text="Additional Parameters:"
+                           VerticalAlignment="Center" />
+                <ContentControl Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
+                                Content="{Binding Path=SelectionSettings}">
+                    <ContentControl.Resources>
+                        <DataTemplate DataType="{x:Type matching:ElitismSelectionSettings}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Overall Selection Ratio"
+                                           ToolTip="Ratio of phenotypes that should be taken directly over to the next generation" />
+                                <TextBox Grid.Row="0" Grid.Column="1"
+                                         Text="{Binding Path=OverallSelectionRatio, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
+                            </Grid>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type matching:TournamentSelectionSettings}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Overall Selection Ratio"
+                                           ToolTip="Ratio of phenotypes that should be calculated through tournament mode, in order to provide a base for next-generation-crossover." />
+                                <TextBox Grid.Row="0" Grid.Column="1"
+                                         Text="{Binding Path=OverallSelectionRatio, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Tournament Size"
+                                           ToolTip="Ratio of phenotypes that will compete in each tournament round. The best one will be selected." />
+                                <TextBox Grid.Row="1" Grid.Column="1"
+                                         Text="{Binding Path=TournamentSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ContentControl.Resources>
+                </ContentControl>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type matching:RandomAlgorithmSettings}">
+            <Grid />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type matching:LinearAlgorithmSettings}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Size Step"
+                           ToolTip="Each time the algorithm completes one iteration over the image it will shrink the character and try again, effectivly increasing the size of the image visible in the resulting character. This value specifies how much the smaller the character should get everytime it iterates over the image. Smaller values equal longer total runtime but increase the amount of possibilites that are checked." />
+                <TextBox Grid.Row="0" Grid.Column="1"
+                         Text="{Binding Path=SizeStep, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Horizontal Step (in relation to the overall image size)" />
+                <TextBox Grid.Row="1" Grid.Column="1"
+                         Text="{Binding Path=HorizontalStepOffset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Vertical Step (in relation to the overall image size)"
+                           ToolTip="Each time the algorithm completes one iteration over the image it will shrink the character and try again, effectivly increasing the size of the image visible in the resulting character. This value specifies how much the smaller the character should get everytime it iterates over the image. Smaller values equal longer total runtime but increase the amount of possibilites that are checked." />
+                <TextBox Grid.Row="2" Grid.Column="1"
+                         Text="{Binding Path=VerticalStepOffset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <!-- Settings -->
+        <Grid IsEnabled="{Binding IsCalculating, Converter={StaticResource BoolConverter}, ConverterParameter=true}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Maximum Time Per Match in Milliseconds" />
+            <TextBox Grid.Row="0" Grid.Column="1"
+                     Text="{Binding Path=TimePerMatch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Maximum Iterations Per Match" />
+            <TextBox Grid.Row="1" Grid.Column="1"
+                     Text="{Binding Path=IterationsPerMatch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
+
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Max Degree of Parallelism" />
+            <TextBox Grid.Row="2" Grid.Column="1"
+                     Text="{Binding Path=MaxDegreeOfParallelism, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
+
+
+            <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Text="ROI-Fitting Algorithm" />
+            <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">
+                <ComboBox ItemsSource="{Binding Source={StaticResource Algorithms}}"
+                          SelectedItem="{Binding Path=FittingAlgorithm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <ContentControl Content="{Binding Path=AlgorithmSettings}" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Calculation Control -->
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Content="Start Calculations" FontSize="12"
+                    Visibility="{Binding Path=IsCalculating, Mode=OneWay, Converter={StaticResource VisibilityConverter}, ConverterParameter=true}"
+                    Click="startCalculationsButton_Click" />
+            <Button Content="Stop Calculations" FontSize="12"
+                    Visibility="{Binding Path=IsCalculating, Mode=OneWay, Converter={StaticResource VisibilityConverter}, ConverterParameter=false}"
+                    Click="stopCalculationsButton_Click" />
+        </StackPanel>
+
+        <!--Progress Information-->
+        <StackPanel Grid.Row="2"
+                    Visibility="{Binding Path=IsCalculating, Mode=OneWay, Converter={StaticResource VisibilityConverter}, ConverterParameter=false}">
+            <ProgressBar Value="{Binding Path=CalculationProgress, Mode=OneWay}" Height="12" />
+            <TextBlock HorizontalAlignment="Center" Text="{Binding Path=ProgressDescription, Mode=OneWay}"
+                       FontSize="12" />
+        </StackPanel>
+
+        <!-- Result -->
+        <TabControl Grid.Row="3" IsEnabled="{Binding Path=IsCalculating, Mode=OneWay, Converter={StaticResource BoolConverter}, ConverterParameter=true}">
+            <TabControl.Items>
+                <TabItem Header="Details">
+                    <DataGrid ItemsSource="{Binding Source={StaticResource ItemCollectionViewSource}}"
+                  AutoGenerateColumns="False" CanUserResizeRows="False"
+                  CanUserReorderColumns="False" SelectionMode="Single" IsReadOnly="False">
+                        <DataGrid.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                            <Grid Background="{TemplateBinding Background}">
+                                                <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DataGrid.CellStyle>
+                        <DataGrid.GroupStyle>
+                            <GroupStyle>
+                                <GroupStyle.HeaderTemplate>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <Image Source="{Binding Items[0].Image.BitmapSource}" MaxHeight="75" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GroupStyle.HeaderTemplate>
+                                <GroupStyle.ContainerStyle>
+                                    <Style TargetType="{x:Type GroupItem}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                    <Expander>
+                                                        <Expander.Header>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Image Source="{Binding Items[0].Image.BitmapSource}"
+                                                           MaxHeight="75" />
+                                                            </StackPanel>
+                                                        </Expander.Header>
+                                                        <ItemsPresenter />
+                                                    </Expander>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </GroupStyle.ContainerStyle>
+                            </GroupStyle>
+                        </DataGrid.GroupStyle>
+                        <DataGrid.RowDetailsTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding FittingAlgorithm.BestResultPreviewBitmapSource}" Height="100" />
+                            </DataTemplate>
+                        </DataGrid.RowDetailsTemplate>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Character" Binding="{Binding Path=Character.Char}" CanUserSort="False">
+                                <DataGridTextColumn.CellStyle>
+                                    <Style TargetType="{x:Type DataGridCell}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                                    <Grid Background="{TemplateBinding Background}">
+                                                        <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="TextBlock.FontSize" Value="18" />
+                                        <Setter Property="TextBlock.FontWeight" Value="Bold" />
+                                    </Style>
+
+                                </DataGridTextColumn.CellStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Normalisied Fitness" Binding="{Binding Path=NormalisiedFitness}" />
+                            <DataGridTextColumn Header="Fitness" Binding="{Binding Path=FittingAlgorithm.BestResult.Rating}" />
+                            <DataGridTextColumn Header="Iterations" Binding="{Binding Path=FittingAlgorithm.Iterations}" />
+                            <DataGridTextColumn Header="Computation Time" Binding="{Binding Path=FittingAlgorithm.CalculationTime}" />
+                            <DataGridCheckBoxColumn Header="Enabled" Binding="{Binding Path=Enabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  />
+                            <DataGridTemplateColumn Header="Customize Matching">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Click="EditMatchButton_OnClick" Padding="1" FontSize="12">Edit...</Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+                <TabItem Header="Overview">
+                    <ListView ItemsSource="{Binding Matches}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel IsItemsHost="True" Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Width="125" Height="200">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <TextBox Grid.Row="0" Text="{Binding Path=NormalisiedFitness, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
+                                    <Image Grid.Row="1" Source="{Binding Path=PreviewBestResult}" />
+                                    <Button Grid.Row="2" Content="Edit..." Click="EditMatchButton_OnClick" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </TabItem>
+            </TabControl.Items>
+        </TabControl>
+
+        <!-- Preview -->
+        <Button Grid.Row="4" Content="Create Preview..." HorizontalAlignment="Center" Click="previewButton_Click" IsEnabled="{Binding Path=IsCalculating, Mode=OneWay, Converter={StaticResource BoolConverter}, ConverterParameter=true}" />
+    </Grid>
+</UserControl>

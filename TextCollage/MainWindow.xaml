@@ -1,0 +1,10 @@
+﻿<Window x:Class="TextCollage.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:userControls="clr-namespace:TextCollage.UserControls"
+        Title="{Binding ElementName=LayoutNavigator, Path=Content.Children[0].Content.Tag, Mode=OneWay, StringFormat=Text Collage - {0}}"
+        MinWidth="350" MinHeight="150" Height="600" Width="800" WindowState="Maximized">
+    <Grid>
+        <userControls:LayoutNavigator x:Name="LayoutNavigator" />
+    </Grid>
+</Window>
